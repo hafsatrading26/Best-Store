@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEST STORE</title>
+<style>
+:root{
+  --primary-1:#ff416c;
+  --primary-2:#ff4b2b;
+  --accent:#6a11cb;
+  --muted:#f0f2f5;
+  --card:#fff;
+  --text:#222;
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, sans-serif}
+body{background:var(--muted);color:var(--text);line-height:1.4;transition:all 0.3s;}
+.container{max-width:1180px;margin:0 auto;padding:20px}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-radius:12px;background:linear-gradient(90deg,var(--primary-2),var(--primary-1));color:#fff;position:sticky;top:0;z-index:999;box-shadow:0 8px 30px rgba(38,40,70,0.15)}
+.logo{font-weight:700;font-size:18px;background:#fff;color:var(--primary-1);padding:10px;border-radius:10px}
+.nav-links a{color:#fff;text-decoration:none;margin-left:15px;font-weight:600}
+.hero{height:100vh;background:linear-gradient(120deg,#000,#111);color:#fff;border-radius:var(--radius);padding:50px;text-align:center;margin:20px 0;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 12px 40px rgba(15,23,36,0.12)}
+.hero h1{font-size:3rem;margin-bottom:10px}
+.hero p{font-size:1.2rem;margin-bottom:20px}
+.btn-primary{background:var(--accent);color:#fff;padding:12px 24px;border:none;border-radius:999px;cursor:pointer;font-weight:700}
+.tools{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:20px 0;display:none}
+.search-box input{width:100%;padding:12px 16px;border-radius:999px;border:1px solid #ccc}
+.categories{display:flex;gap:8px;flex-wrap:wrap}
+.cat-btn{background:#fff;border:1px solid #eee;padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600}
+.cat-btn.active{background:var(--accent);color:#fff;border:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.card{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 10px 22px rgba(18,22,35,0.06);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;transition:transform .2s, font-weight .2s;}
+.card:hover{transform:scale(1.05);font-weight:700;}
+.card img{width:100%;height:180px;object-fit:cover;border-radius:10px}
+.price{font-weight:800;color:var(--accent)}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.add-to-cart{background:var(--accent);color:#fff;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:1001;padding:18px;visibility:hidden;opacity:0;transition:all .2s ease}
+.modal.show{visibility:visible;opacity:1}
+.modal-card{background:var(--card);width:100%;max-width:800px;border-radius:12px;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.modal-card img{width:100%;height:360px;object-fit:cover;border-radius:10px}
+.cart-btn{position:fixed;right:18px;bottom:18px;background:var(--primary-2);color:#fff;padding:16px 20px;font-size:1.2rem;border-radius:999px;border:none;cursor:pointer;z-index:1002;box-shadow:0 18px 50px rgba(37,117,252,0.18);animation:vibrate 0.5s infinite alternate;}
+@keyframes vibrate{0%{transform:translateX(0);}50%{transform:translateX(2px);}100%{transform:translateX(-2px);}}
+.cart-panel{position:fixed;right:18px;top:18px;width:360px;max-height:80vh;background:var(--card);border-radius:12px;padding:14px;overflow:auto;box-shadow:0 30px 80px rgba(10,20,40,0.2);z-index:1002;display:none}
+.cart-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;margin-bottom:8px;background:#fafafa;flex-wrap:wrap}
+.cart-item img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+.cart-item .meta{flex:1}
+.cart-item .meta h5{font-size:0.95rem;margin-bottom:4px;}
+.cart-item .meta .qty-controls{display:flex;gap:4px;align-items:center;margin-top:4px}
+.cart-item .remove-btn{background:red;color:#fff;padding:2px 6px;border:none;border-radius:6px;cursor:pointer;margin-left:6px}
+.line{height:1px;background:#eee;margin:10px 0}
+footer{margin-top:26px;padding:30px;border-radius:12px;background:#0b1220;color:#cbd5e1;text-align:center}
+.contact{margin-top:40px;padding:30px;border-radius:12px;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,0.1);}
+.contact h3{margin-bottom:15px}
+.contact p{margin-bottom:6px;font-weight:600}
+.complain-box{position:fixed;right:0;top:50%;transform:translateY(-50%);background:var(--accent);color:#fff;padding:10px 12px;border-radius:8px 0 0 8px;cursor:pointer;z-index:1003}
+.complain-form{position:fixed;right:0;top:50%;transform:translateY(-50%);background:var(--card);padding:20px;border-radius:12px;display:none;flex-direction:column;gap:10px;z-index:1004;box-shadow:0 8px 30px rgba(0,0,0,0.2)}
+.complain-form textarea{width:250px;height:100px;padding:8px;border-radius:8px;border:1px solid #ccc}
+.complain-form button{background:var(--accent);color:#fff;padding:8px;border:none;border-radius:8px;cursor:pointer;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="navbar container">
+  <div class="logo">BS</div>
+  <div class="nav-links">
+    <a href="#hero">Home</a>
+    <a href="#productsSection">Shop</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
+
+<section class="hero" id="hero">
+  <h1>Welcome to our BEST STORE</h1>
+  <p>Exclusive Women’s Fashion & Beauty Products</p>
+  <button class="btn-primary" onclick="showProducts()">Shop Now</button>
+  <div style="margin-top:20px;">🔥 Featured Offers: Up to 20% off!</div>
+</section>
+
+<div class="container tools" id="tools">
+  <div class="search-box">
+    <input id="searchInput" placeholder="Search products..." />
+  </div>
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="all">All</button>
+    <button class="cat-btn" data-cat="fashion">Fashion</button>
+    <button class="cat-btn" data-cat="makeup">Makeup</button>
+    <button class="cat-btn" data-cat="accessories">Accessories</button>
+  </div>
+</div>
+
+<section id="productsSection" class="container">
+  <div class="grid" id="grid"></div>
+</section>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div><img id="modalImg" src="" alt="product"></div>
+    <div>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDesc"></p>
+      <div style="margin-top:12px" class="price-row">
+        <div style="font-weight:800;color:var(--accent)" id="modalPrice"></div>
+      </div>
+      <button class="add-to-cart" id="modalAdd">Add to Cart</button>
+      <button style="margin-top:10px" id="modalClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<button class="cart-btn" id="openCart">Cart (<span id="cartCount">0</span>)</button>
+<div class="cart-panel" id="cartPanel">
+  <h3>Your Cart</h3>
+  <div id="cartList"></div>
+  <div class="line"></div>
+  <button class="add-to-cart" id="checkoutCart">Order via WhatsApp</button>
+</div>
+
+<section class="contact container" id="contact">
+  <h3>Contact Us</h3>
+  <p>Phone: 8801585253698</p>
+  <p>Email: hafsatrading26@gmail.com</p>
+  <p>Address: H-29, R-3, Nikunja-2, Khilkhet, Dhaka-1229</p>
+  <iframe src="https://www.google.com/maps?q=H-29,R-3,Nikunja-2,Khilkhet,Dhaka&output=embed" width="100%" height="200" style="border:0;margin-top:10px;"></iframe>
+</section>
+
+<footer>
+&copy; 2025 BEST STORE | Follow us on FB, Instagram, TikTok
+</footer>
+
+<div class="complain-box" id="complainBox">Complaints 📝</div>
+<div class="complain-form" id="complainForm">
+  <h4>Submit your complaint</h4>
+  <textarea placeholder="Write your complaint here..."></textarea>
+  <button id="submitComplain">Submit</button>
+  <button id="closeComplain">Close</button>
+</div>
+
+<script>
+const PRODUCTS=[
+{title:'Saree',price:1200,img:'https://i.ibb.co/2S0pM1P/saree.jpg',category:'fashion'},
+{title:'Salwar Kameez',price:950,img:'https://i.ibb.co/GPfM6mJ/salwar.jpg',category:'fashion'},
+{title:'Kurti',price:700,img:'https://i.ibb.co/T2Hhk2R/kurti.jpg',category:'fashion'},
+{title:'Lehenga',price:1500,img:'https://i.ibb.co/6ZKHQ1K/lehenga.jpg',category:'fashion'},
+{title:'Gown',price:1400,img:'https://i.ibb.co/wJc5Ckt/gown.jpg',category:'fashion'},
+{title:'Skirt',price:650,img:'https://i.ibb.co/fXkjS3S/skirt.jpg',category:'fashion'},
+{title:'Tops',price:600,img:'https://i.ibb.co/jVt0bG0/top.jpg',category:'fashion'},
+{title:'Jeans',price:800,img:'https://i.ibb.co/yPjW9vM/jeans.jpg',category:'fashion'},
+{title:'Palazzo',price:750,img:'https://i.ibb.co/QNBVZ4v/palazzo.jpg',category:'fashion'},
+{title:'Leggings',price:500,img:'https://i.ibb.co/8mFq5Vz/leggings.jpg',category:'fashion'},
+{title:'Blouse',price:700,img:'https://i.ibb.co/2SjH5xk/blouse.jpg',category:'fashion'},
+{title:'Dupatta',price:550,img:'https://i.ibb.co/mhrL3zw/dupatta.jpg',category:'fashion'},
+{title:'Jumpsuit',price:1200,img:'https://i.ibb.co/TkRswYv/jumpsuit.jpg',category:'fashion'},
+{title:'Shorts',price:600,img:'https://i.ibb.co/BscbY3X/shorts.jpg',category:'fashion'},
+{title:'Nightdress',price:500,img:'https://i.ibb.co/wLqg5Vr/nightdress.jpg',category:'fashion'},
+{title:'Hijab',price:500,img:'https://i.ibb.co/B2YwM5x/hijab.jpg',category:'fashion'},
+{title:'Abaya',price:900,img:'https://i.ibb.co/NFz5Df9/abaya.jpg',category:'fashion'},
+{title:'Sweater',price:850,img:'https://i.ibb.co/bW7z2GQ/sweater.jpg',category:'fashion'},
+{title:'Jacket',price:1200,img:'https://i.ibb.co/2tFQ9kG/jacket.jpg',category:'fashion'},
+{title:'Cardigan',price:950,img:'https://i.ibb.co/kH3nL5r/cardigan.jpg',category:'fashion'},
+{title:'Heels',price:1100,img:'https://i.ibb.co/5nK7zL8/heels.jpg',category:'accessories'},
+{title:'Sandals',price:650,img:'https://i.ibb.co/s2Jxx1D/sandals.jpg',category:'accessories'},
+{title:'Sneakers',price:1200,img:'https://i.ibb.co/qCk68xY/sneakers.jpg',category:'accessories'},
+{title:'Handbag',price:900,img:'https://i.ibb.co/x2Dg6W9/handbag.jpg',category:'accessories'},
+{title:'Clutch',price:700,img:'https://i.ibb.co/d0kS1Rz/clutch.jpg',category:'accessories'},
+{title:'Wallet',price:500,img:'https://i.ibb.co/TPxSbQm/wallet.jpg',category:'accessories'},
+{title:'Earrings',price:600,img:'https://i.ibb.co/2t6tCnF/earrings.jpg',category:'accessories'},
+{title:'Necklace',price:800,img:'https://i.ibb.co/4jFv7PQ/necklace.jpg',category:'accessories'},
+{title:'Ring',price:500,img:'https://i.ibb.co/v3c6VZr/ring.jpg',category:'accessories'},
+{title:'Bracelet',price:550,img:'https://i.ibb.co/3mFZ0cK/bracelet.jpg',category:'accessories'},
+{title:'Bangles',price:500,img:'https://i.ibb.co/Y08tZs2/bangles.jpg',category:'accessories'},
+{title:'Hair Clips',price:500,img:'https://i.ibb.co/x3rY6m5/hairclips.jpg',category:'accessories'},
+{title:'Sunglasses',price:700,img:'https://i.ibb.co/HxYtMvx/sunglasses.jpg',category:'accessories'},
+{title:'Ladies Watch',price:1200,img:'https://i.ibb.co/3dY0XYG/watch.jpg',category:'accessories'},
+{title:'Makeup Kit',price:1300,img:'https://i.ibb.co/7pXc9ZG/makeupkit.jpg',category:'makeup'},
+{title:'Lipstick',price:500,img:'https://i.ibb.co/8YyC7R3/lipstick.jpg',category:'makeup'},
+{title:'Lip Gloss',price:600,img:'https://i.ibb.co/0KXqzJp/lipgloss.jpg',category:'makeup'},
+{title:'Lip Liner',price:550,img:'https://i.ibb.co/b7PKh5H/lipliner.jpg',category:'makeup'},
+{title:'Foundation',price:900,img:'https://i.ibb.co/7Vd0F0K/foundation.jpg',category:'makeup'},
+{title:'Compact Powder',price:700,img:'https://i.ibb.co/6vWkN8x/powder.jpg',category:'makeup'},
+{title:'Blush',price:600,img:'https://i.ibb.co/NjGQHgF/blush.jpg',category:'makeup'},
+{title:'Highlighter',price:800,img:'https://i.ibb.co/9b4gXcL/highlighter.jpg',category:'makeup'},
+{title:'Eyeshadow Palette',price:1200,img:'https://i.ibb.co/FW3mZ1C/eyeshadow.jpg',category:'makeup'},
+{title:'Eyeliner',price:500,img:'https://i.ibb.co/bRYR3sQ/eyeliner.jpg',category:'makeup'},
+{title:'Mascara',price:600,img:'https://i.ibb.co/f4p5qP7/mascara.jpg',category:'makeup'},
+{title:'Kajal',price:500,img:'https://i.ibb.co/QFkH2v5/kajal.jpg',category:'makeup'},
+{title:'Nail Polish',price:500,img:'https://i.ibb.co/9tWnY9T/nailpolish.jpg',category:'makeup'},
+{title:'Nail Remover',price:500,img:'https://i.ibb.co/0KxM5Jr/nailremover.jpg',category:'makeup'},
+{title:'Perfume',price:1200,img:'https://i.ibb.co/7yk0L4Q/perfume.jpg',category:'accessories'},
+{title:'Body Spray',price:700,img:'https://i.ibb.co/yX6LxK0/bodyspray.jpg',category:'accessories'},
+{title:'Face Wash',price:600,img:'https://i.ibb.co/bswQkP6/facewash.jpg',category:'makeup'},
+{title:'Moisturizer',price:900,img:'https://i.ibb.co/8sVfP9R/moisturizer.jpg',category:'makeup'},
+{title:'Sunscreen',price:700,img:'https://i.ibb.co/b6M0H9T/sunscreen.jpg',category:'makeup'},
+{title:'Shampoo',price:600,img:'https://i.ibb.co/8xMk4Hs/shampoo.jpg',category:'makeup'},
+{title:'Conditioner',price:650,img:'https://i.ibb.co/HNK7Q9R/conditioner.jpg',category:'makeup'}
+];
+
+const grid=document.getElementById('grid');
+const modal=document.getElementById('modal');
+const modalImg=document.getElementById('modalImg');
+const modalTitle=document.getElementById('modalTitle');
+const modalPrice=document.getElementById('modalPrice');
+const modalAdd=document.getElementById('modalAdd');
+const modalClose=document.getElementById('modalClose');
+const tools=document.getElementById('tools');
+const searchInput=document.getElementById('searchInput');
+const categories=document.querySelectorAll('.cat-btn');
+const cartBtn=document.getElementById('openCart');
+const cartPanel=document.getElementById('cartPanel');
+const cartList=document.getElementById('cartList');
+const cartCount=document.getElementById('cartCount');
+const checkoutCart=document.getElementById('checkoutCart');
+
+let cart=[];
+let selectedProduct=null;
+
+function renderProducts(products){
+  grid.innerHTML='';
+  products.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.innerHTML=`<img src="${p.img}" alt="${p.title}"><h3>${p.title}</h3><div class="price">৳ ${p.price}</div><button class="add-to-cart">Add to Cart</button>`;
+    div.querySelector('.add-to-cart').onclick=()=>addToCart(p);
+    div.onclick=(e)=>{if(e.target.tagName!=='BUTTON'){showModal(p)}};
+    grid.appendChild(div);
+  });
+}
+
+function showModal(p){
+  selectedProduct=p;
+  modalImg.src=p.img;
+  modalTitle.textContent=p.title;
+  modalPrice.textContent='৳ '+p.price;
+  modal.classList.add('show');
+}
+
+modalClose.onclick=()=>modal.classList.remove('show');
+
+function addToCart(p){
+  const exist=cart.find(c=>c.title===p.title);
+  if(exist) exist.qty+=1;
+  else cart.push({...p,qty:1});
+  updateCart();
+}
+
+function updateCart(){
+  cartList.innerHTML='';
+  cart.forEach(c=>{
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`<img src="${c.img}"><div class="meta"><h5>${c.title}</h5><div class="qty-controls">
+      <button onclick="changeQty('${c.title}',-1)">-</button>
+      ${c.qty}
+      <button onclick="changeQty('${c.title}',1)">+</button>
+      <button class="remove-btn" onclick="removeItem('${c.title}')">x</button>
+    </div></div><div class="price">৳ ${c.price*c.qty}</div>`;
+    cartList.appendChild(div);
+  });
+  cartCount.textContent=cart.reduce((a,b)=>a+b.qty,0);
+}
+
+function changeQty(title,delta){
+  const item=cart.find(c=>c.title===title);
+  if(!item) return;
+  item.qty+=delta;
+  if(item.qty<=0) removeItem(title);
+  updateCart();
+}
+
+function removeItem(title){
+  cart=cart.filter(c=>c.title!==title);
+  updateCart();
+}
+
+checkoutCart.onclick=()=>{
+  if(cart.length===0) return alert('Cart empty');
+  let text='Hello, I want to order:\n';
+  cart.forEach(c=>text+=`${c.title} x ${c.qty} = ৳${c.price*c.qty}\n`);
+  const url='https://wa.me/8801585253698?text='+encodeURIComponent(text);
+  window.open(url,'_blank');
+}
+
+cartBtn.onclick=()=>cartPanel.style.display=cartPanel.style.display==='block'?'none':'block';
+
+searchInput.oninput=()=>filterProducts();
+categories.forEach(btn=>{
+  btn.onclick=()=>{
+    categories.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    filterProducts();
+  }
+});
+
+function filterProducts(){
+  const val=searchInput.value.toLowerCase();
+  const cat=document.querySelector('.cat-btn.active').dataset.cat;
+  const filtered=PRODUCTS.filter(p=>{
+    return (cat==='all'||p.category===cat)&&(p.title.toLowerCase().includes(val));
+  });
+  renderProducts(filtered);
+}
+
+function showProducts(){
+  tools.style.display='flex';
+  window.scrollTo({top:document.getElementById('productsSection').offsetTop,behavior:'smooth'});
+  renderProducts(PRODUCTS);
+}
+
+const complainBox=document.getElementById('complainBox');
+const complainForm=document.getElementById('complainForm');
+document.getElementById('closeComplain').onclick=()=>complainForm.style.display='none';
+complainBox.onclick=()=>complainForm.style.display='flex';
+document.getElementById('submitComplain').onclick=()=>{alert('Complaint submitted!');complainForm.style.display='none';};
+function renderProducts(products){
+  grid.innerHTML='';
+  products.forEach(p=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.innerHTML=`<img src="${p.img}" alt="${p.title}"><h3>${p.title}</h3><div class="price">৳ ${p.price}</div><button class="add-to-cart">Add to Cart</button>`;
+    div.querySelector('.add-to-cart').onclick=()=>addToCart(p);
+    div.onclick=(e)=>{if(e.target.tagName!=='BUTTON'){showModal(p)}};
+    grid.appendChild(div);
+  });
+}
+
+function addToCart(p){
+  const exist=cart.find(c=>c.title===p.title);
+  if(exist) exist.qty+=1;
+  else cart.push({...p,qty:1});
+  updateCart();
+}
+
+function updateCart(){
+  cartList.innerHTML='';
+  cart.forEach(c=>{
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`
+      <img src="${c.img}">
+      <div class="meta">
+        <h5>${c.title}</h5>
+        <div class="qty-controls">
+          <button onclick="changeQty('${c.title}',-1)">-</button>
+          <span>${c.qty}</span>
+          <button onclick="changeQty('${c.title}',1)">+</button>
+          <button class="remove-btn" onclick="removeItem('${c.title}')">x</button>
+        </div>
+      </div>
+      <div class="price">৳ ${c.price*c.qty}</div>
+    `;
+    cartList.appendChild(div);
+  });
+  cartCount.textContent=cart.reduce((a,b)=>a+b.qty,0);
+}
+
+function changeQty(title,delta){
+  const item=cart.find(c=>c.title===title);
+  if(!item) return;
+  item.qty+=delta;
+  if(item.qty<=0) removeItem(title);
+  updateCart();
+}
+
+function removeItem(title){
+  cart=cart.filter(c=>c.title!==title);
+  updateCart();
+}
+
+checkoutCart.onclick=()=>{
+  if(cart.length===0) return alert('Cart empty');
+  let text='Hello, I want to order:\n';
+  cart.forEach(c=>text+=`${c.title} x ${c.qty} = ৳${c.price*c.qty}\n`);
+  const url='https://wa.me/8801585253698?text='+encodeURIComponent(text);
+  window.open(url,'_blank');
+}
+</script>
+
+</body>
+</html>
